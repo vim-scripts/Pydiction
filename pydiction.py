@@ -1,49 +1,95 @@
 #!/usr/bin/env python
-# pydiction.py 
-# Author: Ryan (gt3) Kulla  <ambiod@sbcglobal.net>
-# Version: 0.2
-# Date: Dec 2003
-# Desc: Used for creating a dictionary of Python's module/method names for vim's completion feature.
-# Usage: pydiction.py <module-name> >>pydiction
-# Example: The following will append all the time module's methods to the file "pydiction" with 
-#          and without the "time." prefix:   pydiction.py time >>pydiction
+# pydiction.py 0.3
+
+
+""" pydiction creats a dictionary of Python module attributes for vim's completion feature.
+    Usage: pydiction.py <module(s)> [-v]
+    (Note: If you're getting import errors try importing the Package's main module below in this file)
+
+    Example: The following will append all the time and math modules' attributes to the file "pydiction" with 
+             and without the "time." and "math." prefix:   
+             
+                 $python pydiction.py time math
+             
+             To print the output to stdout, supply the -v option (This won't append to the pydiction file):
+             
+                 $python pydiction.py -v time math
+"""
+             
+
+
+__author__ = 'Ryan (gt3) Kulla <ambiod@sbcglobal.net>'
+__version__ = '0.3'
+
+
+import os
 import sys
+import types
 
 
-def main():
-    if len(sys.argv) != 2:
-        sys.stderr.write("%s requires one argument\n" % sys.argv[0])
-        sys.exit()
+def main_loop(write_to):
+    sub_mods = []
 
-    modname = sys.argv[1]
+    for mod_name in sys.argv[1:]:
+        sub_mods = mod_lookup(mod_name, sub_mods, write_to)
+
+        # process current mod_name's submodules
+        for mod_name in sub_mods:
+            sub_mods = mod_lookup(mod_name, sub_mods, write_to, False)
+
+
+def mod_lookup(mod_name, sub_mods, write_to, dig=True):
+    prefix_on = {True:"%s.%s(", False:"%s.%s"}
+    prefix_off = {True:"%s(", False:"%s"}
 
     try:
-        exec "import " + modname
-    except ImportError:
-        sys.stdout.write("ImportError: No module named: %s\n" % modname)
-        return
-    except:
-        return
+        exec "import %s" % mod_name
+    except ImportError, err_msg:
+        if sub_mods != []: # sub_mod isn't an importable module
+            sub_mods.remove(mod_name) 
+        else: 
+            sys.stderr.write("ImportError: %s\n" % err_msg)
+            sys.exit()
 
-    mod_contents = dir(eval(modname))
+    mod_contents = dir(eval(mod_name))
 
-    # prefix module name
-    print "\n-- %s module with \"%s.\" prefix --" % (modname, modname)
-    for i in mod_contents:
-        if callable(eval(modname + '.' + i)):
-            # it's a function so append a '(' for the auto-completion
-            print modname + '.' + i + '('
+    write_to.write('\n-- %(x)s module with "%(x)s." prefix --\n' % {'x': mod_name})
+    for attr in mod_contents:
+        if callable(getattr(eval(mod_name), attr)):
+            write_to.write(prefix_on[True] % (mod_name, attr) + '\n')
         else:
-            print modname + '.' + i    
+            write_to.write(prefix_on[False] % (mod_name, attr) + '\n')
+            if dig is True: # dig for submodules
+                if type(getattr(eval(mod_name), attr)) is types.ModuleType:
+                    sub_mods.append(mod_name + '.' + attr)
 
-    # don't prefix module name
-    print "\n-- %s module without \"%s.\" prefix --" % (modname, modname)
-    for i in mod_contents:
-        if callable(eval(modname + '.' + i)):
-            print i + '('
+    write_to.write('\n-- %(x)s module without "%(x)s." prefix --\n' % {'x': mod_name})
+    for attr in mod_contents:
+        if callable(getattr(eval(mod_name), attr)):
+            write_to.write(prefix_off[True] % attr + '\n')
         else:
-            print i
+            write_to.write(prefix_off[False] % attr + '\n')
+
+    return sub_mods
 
 
 if __name__ == '__main__':
-    main()
+    if sys.version_info[0:2] < (2, 3):
+        sys.stderr.write("Please upgrade to Python 2.3 or greater\n")
+        sys.exit()
+
+    if len(sys.argv) <= 1:
+        sys.stderr.write("%s requires at least one argument\n" % sys.argv[0])
+        sys.exit()
+
+    if "-v" in sys.argv:
+        write_to = sys.stdout
+        sys.argv.remove("-v")
+    else:
+        if os.path.exists("pydiction"):
+            print "Appending to pydiction file.."
+        else:
+            print "Creating and writing to pydiction file.."
+        write_to = open("pydiction", "a")
+
+    main_loop(write_to)
