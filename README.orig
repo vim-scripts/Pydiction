@@ -1,7 +1,7 @@
 Pydiction
-Version: 0.4
+Version: 0.5
 Author: Ryan (gt3) Kulla. ambiod@sbcglobal.net 
-Date: Dec 2003 
+Date: Jan 2004
 
 
 Description: pydiction is a special dictionary file of Python modules for use with vim's completion feature.
@@ -107,7 +107,7 @@ xml.dom.pulldom, xml.sax, xml.sax.handler, xml.sax.saxutils, xml.sax.xmlreader, 
 aifc, sunau, wave, chunk, colorsys, rgbimg, imghdr, sndhdr, hmac, md5, sha, rotor, Tkinter, Tix, 
 ScrolledText, turtle, rexec, Bastion, parser, symbol, token, keyword, tokenize, tabnanny, pyclbr, 
 py_compile, compileall, dis, distutils, compiler, compiler.ast, compiler.visitor, msvcrt, _winreg,
-winsound, pygame, wxPython, twisted, Numeric, numarray
+winsound, pygame, wxPython, twisted, Numeric, numarray, ldap
 
 Currently Supported Keywords:
 and       del       for       is        raise

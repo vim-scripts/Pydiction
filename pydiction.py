@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# pydiction.py 0.4
+# pydiction.py 0.5
 
 
 """ pydiction creats a dictionary of Python module attributes for vim's completion feature.
@@ -19,13 +19,12 @@
 
 
 __author__ = 'Ryan (gt3) Kulla <ambiod@sbcglobal.net>'
-__version__ = '0.4'
+__version__ = '0.5'
 
 
 import os
 import sys
 import types
-import Numeric#
 
 
 def main_loop(write_to):
