@@ -1,5 +1,5 @@
 Pydiction
-Version: 0.3
+Version: 0.4
 Author: Ryan (gt3) Kulla. ambiod@sbcglobal.net 
 Date: Dec 2003 
 
@@ -48,10 +48,10 @@ to the pydiction file:
 "pydiction dictionary file" Usage: 
 Put the following lines in your vimrc file:
 
-   set complete+=k
-   set isk+=.
-   set isk+=(
-   set dictionary+=/path/to/pydiction
+    if has("autocmd")
+      autocmd FileType python set complete+=k/path/to/pydiction iskeyword+=.,(
+    endif " has("autocmd")
+
 
 Now you can simply hit Control-n (n=next) or Control-p (p=previous) to complete Python code.
 (type ":help completion" in vim for more details)
@@ -107,7 +107,7 @@ xml.dom.pulldom, xml.sax, xml.sax.handler, xml.sax.saxutils, xml.sax.xmlreader, 
 aifc, sunau, wave, chunk, colorsys, rgbimg, imghdr, sndhdr, hmac, md5, sha, rotor, Tkinter, Tix, 
 ScrolledText, turtle, rexec, Bastion, parser, symbol, token, keyword, tokenize, tabnanny, pyclbr, 
 py_compile, compileall, dis, distutils, compiler, compiler.ast, compiler.visitor, msvcrt, _winreg,
-winsound, pygame, wxPython, twisted
+winsound, pygame, wxPython, twisted, Numeric, numarray
 
 Currently Supported Keywords:
 and       del       for       is        raise
