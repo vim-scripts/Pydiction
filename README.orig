@@ -1,0 +1,99 @@
+pydiction README
+-----------------
+
+CONTENTS
+--------
+
+1) About Pydiction
+2) How to add your own modules to the pydiction dictionary file
+
+===========================================================================================
+
+ABOUT PYDICTION
+---------------
+About Pydiction
+Author: Ryan Kulla
+
+Description: pydiction is a special dictionary file of common Python modules/methods/keywords for use with 
+             vim's auto-completion feature.
+
+Usage: 
+Put the following 2 lines in your vimrc file:
+
+     set complete+=k
+     set dictionary+=/path/to/pydiction
+
+Now you can simply hit Ctrl-n or Cntrl-p to autocomplete Python module/keyword names.
+
+Example:
+Typing the following (in insert mode):
+
+    os.lis
+
+will expand to:
+ 
+    os.listdir(
+
+You can also leave out the module.
+Example:
+
+    lis
+
+will expand to:
+
+    listdir(
+
+If there are multiple entries for an abbreviation, you'll be givin a list of names to choose from.
+
+Supported Python Modules: 
+__builtin__, __main__, __future__, os, os.walk, sys, datetime, time, locale, atexit, readline, rlcompleter, 
+types, UserDict, UserList, UserString, operator, inspect, traceback, linecache, pickle, cPickle, copy_reg, 
+shelve, copy, marshal, warnings, imp, pkgutil, code, codeop, pprint, repr, new, site, user, string, re, 
+struct, difflib, fpformat, StringIO, cStringIO, textwrap, codecs, encodings, unicodedata, stringprep, pydoc,
+doctest, unittest, test, math, cmath, random, whrandom, bisect, heapq, array, sets, itertools, ConfigParser, 
+fileinput, xreadlines, cmd, shlex, dircache, stat, statcache, statvfs, filecmp, popen2, sched, mutex, getpass, 
+curses, getopt, optparse, tempfile, errno, glob, fnmatch, shutil, gettext, logging, signal, socket, select,
+thread, threading, dummy_thread, dummy_threading, Queue, mmap, anydbm, dbhash, whichdb, bsddb,
+dumbdbm, zlib, gzip, bz2, zipfile, tarfile, posix, pwd, grp, crypt, dl, gdbm, termios, tty, pty,
+fcntl, pipes, resource, syslog, commands, pdb, profile, hotshot, timeit, webbrowser, cgi, cgitb,
+urllib, urllib2, httplib, ftplib, gopherlib, poplib, imaplib, nntplib, smtplib, telnetlib, urlparse,
+SocketServer, BaseHTTPServer, SimpleHTTPServer, CGIHTTPServer, Cookie, xmlrpclib, SimpleXMLRPCServer,
+DocXMLRPCServer, asyncore, asynchat, formatter, email, mailcap, mailbox, mhlib, mimetools, mimetypes,
+MimeWriter, mimify, multifile, rfc822, base64, binascii, binhex, quopri, uu, xdrlib, netrc, robotparser,
+csv, HTMLParser, sgmllib, htmllib, htmlentitydefs, xml.parsers.expat, xml.dom, xml.dom.minidom, 
+xml.dom.pulldom, xml.sax, xml.sax.handler, xml.sax.saxutils, xml.sax.xmlreader, xmllib, audioop, imageop,
+aifc, sunau, wave, chunk, colorsys, rgbimg, imghdr, sndhdr, hmac, md5, sha, rotor, Tkinter, Tix, 
+ScrolledText, turtle, rexec, Bastion, parser, symbol, token, keyword, tokenize, tabnanny, pyclbr, 
+py_compile, compileall, dis, distutils, compiler, compiler.ast, compiler.visitor, msvcrt, _winreg,
+winsound, pygame, pygame.rect, pygame.surface, pygame.cdrom, pygame.display, pygame.draw, pygame.event,
+pygame.font, pygame.image, pygame.joystick, pygame.key, pygame.mixer, pygame.mixer.music, pygame.mouse,
+pygame.movie, pygame.sndarray, pygame.surfarray, pygame.time, pygame.transform, pygame.color, 
+pygame.cursors, pygame.sprite
+
+Supported Python Keywords:
+and       del       for       is        raise
+assert    elif      from      lambda    return   
+break     else      global    not       try      
+class     except    if        or        while    
+continue  exec      import    pass      yield    
+def       finally   in        print
+
+========================================================================================================
+
+
+HOW TO ADD YOUR OWN MODULES TO THE PYDICTION DICTIONARY FILE
+------------------------------------------------------------
+
+pydiction.py is used for creating a dictionary of Python's module/method names for vim's completion feature.
+
+If you're working on a big project you might want to add your projects own module/method/etc names to the
+pydiction file so you can auto-complete those names as well.
+
+Usage: 
+
+    pydiction.py <module-name> >>pydiction
+
+Example: The following will append all the time module's methods to the file "pydiction" with 
+         and without the "time." prefix:   
+
+    pydiction.py time >>pydiction
