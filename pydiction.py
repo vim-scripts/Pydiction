@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# Last modified: July 15th, 2009
+# Last modified: July 20th, 2009
 """
 
-pydiction.py 1.0 by Ryan Kulla (rkulla AT gmail DOT com).
+pydiction.py 1.1 by Ryan Kulla (rkulla AT gmail DOT com).
 
 Description: Creates a Vim dictionary of Python module attributes for Vim's 
              completion feature.  The created dictionary file is used by
@@ -22,7 +22,7 @@ License: BSD.
 
 
 __author__ = "Ryan Kulla (rkulla AT gmail DOT com)"
-__version__ = "1.0"
+__version__ = "1.1"
 __copyright__ = "Copyright (c) 2003-2009 Ryan Kulla"
 
 
@@ -36,6 +36,9 @@ import shutil
 PYDICTION_DICT = r'complete-dict'
 # Path/filename of the vim dictionary backup file:
 PYDICTION_DICT_BACKUP = r'complete-dict.last'
+
+# Sentintal to test if we should only output to stdout:
+STDOUT_ONLY = False
 
 
 def get_submodules(module_name, submodules):
@@ -176,6 +179,9 @@ def main(write_to):
     for submodule_name in submodules:
         write_dictionary(submodule_name)
 
+    if STDOUT_ONLY:
+        return
+
     # Close and Reopen the file for reading and remove all duplicate lines:
     write_to.close()
     print "Removing duplicates..."
@@ -208,6 +214,7 @@ if __name__ == '__main__':
     if '-v' in sys.argv:
         write_to = sys.stdout
         sys.argv.remove('-v')
+        STDOUT_ONLY = True
     elif os.path.exists(PYDICTION_DICT):
             # See if any of the given modules have already been pydiction'd:
             f = open(PYDICTION_DICT, 'r')
@@ -249,6 +256,8 @@ if __name__ == '__main__':
     else:
         print 'Creating file: "%s"' % PYDICTION_DICT
 
-    write_to = open(PYDICTION_DICT, 'a')
+
+    if not STDOUT_ONLY:
+        write_to = open(PYDICTION_DICT, 'a')
 
     main(write_to)

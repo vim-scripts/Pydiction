@@ -3,9 +3,9 @@
 " ============================================================================
 "
 " Author: Ryan Kulla (rkulla AT gmail DOT com)
-" Version: 1.0, for Vim 7
+" Version: 1.1, for Vim 7
 " URL: http://www.vim.org/scripts/script.php?script_id=850
-" Last Modified: July 18th, 2009
+" Last Modified: July 20th, 2009
 " Installation: On Linux, put this file in ~/.vim/after/ftplugin/
 "               On Windows, put this file in C:\vim\vimfiles\ftplugin\
 "                        (assuming you installed vim in C:\vim\).
@@ -17,6 +17,9 @@
 "                   let g:pydiction_menu_height = 20
 "               The default menu height is 15
 "               To do case-sensitive searches, set noignorecase (:set noic).
+" Usage: Type part of a Python keyword, module name, attribute or method,
+"        then hit the TAB key and it will auto-complete (as long as it 
+"        exists in the complete-dict file.
 " License: BSD
 " Copyright: Copyright (c) 2003-2009 Ryan Kulla
 "            All rights reserved.
