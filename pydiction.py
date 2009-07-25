@@ -1,8 +1,8 @@
 #!/usr/bin/env python
-# Last modified: July 20th, 2009
+# Last modified: July 23rd, 2009
 """
 
-pydiction.py 1.1 by Ryan Kulla (rkulla AT gmail DOT com).
+pydiction.py 1.2 by Ryan Kulla (rkulla AT gmail DOT com).
 
 Description: Creates a Vim dictionary of Python module attributes for Vim's 
              completion feature.  The created dictionary file is used by
@@ -22,7 +22,7 @@ License: BSD.
 
 
 __author__ = "Ryan Kulla (rkulla AT gmail DOT com)"
-__version__ = "1.1"
+__version__ = "1.2"
 __copyright__ = "Copyright (c) 2003-2009 Ryan Kulla"
 
 
@@ -61,6 +61,10 @@ def get_submodules(module_name, submodules):
 
 def write_dictionary(module_name):
     """Write to module attributes to the vim dictionary file."""
+    prefix_on = '%s.%s'
+    prefix_on_callable = '%s.%s('
+    prefix_off = '%s'
+    prefix_off_callable = '%s('
 
     try:
         imported_module = my_import(module_name)
@@ -70,25 +74,42 @@ def write_dictionary(module_name):
     mod_attrs = dir(imported_module)
 
     # Generate fully-qualified module names: 
-    write_to.write('\n--- %(x)s module with "%(x)s." prefix ---\n' % 
-                   {'x': module_name})
+    write_to.write('\n--- import %s ---\n' % module_name)
     for mod_attr in mod_attrs:
         if callable(getattr(imported_module, mod_attr)):
             # If an attribute is callable, show an opening parentheses:
-            prefix_on = '%s.%s('
+            format = prefix_on_callable
         else:
-            prefix_on = '%s.%s'
-        write_to.write(prefix_on % (module_name, mod_attr) + '\n')
+            format = prefix_on
+        write_to.write(format % (module_name, mod_attr) + '\n')
+
+    # Generate submodule names by themselves, for when someone does
+    # "from foo import bar" and wants to complete bar.baz.
+    # This works the same no matter how many .'s are in the module.
+    if module_name.count('.'):
+        # Get the "from" part of the module. E.g., 'xml.parsers'
+        # if the module name was 'xml.parsers.expat':
+        first_part = module_name[:module_name.rfind('.')]
+        # Get the "import" part of the module. E.g., 'expat'
+        # if the module name was 'xml.parsers.expat'
+        second_part = module_name[module_name.rfind('.') + 1:]
+        write_to.write('\n--- from %s import %s ---\n' % 
+                       (first_part, second_part))
+        for mod_attr in mod_attrs:
+            if callable(getattr(imported_module, mod_attr)):
+                format = prefix_on_callable
+            else:
+                format = prefix_on
+            write_to.write(format % (second_part, mod_attr) + '\n')
 
     # Generate non-fully-qualified module names: 
-    write_to.write('\n--- %(x)s module without "%(x)s." prefix ---\n' % 
-                   {'x': module_name})
+    write_to.write('\n--- from %s import * ---\n' % module_name)
     for mod_attr in mod_attrs:
         if callable(getattr(imported_module, mod_attr)):
-            prefix_off = '%s('
+            format = prefix_off_callable
         else:
-            prefix_off = '%s'
-        write_to.write(prefix_off % mod_attr + '\n')
+            format = prefix_off
+        write_to.write(format % mod_attr + '\n')
 
 
 def my_import(name):
@@ -221,7 +242,7 @@ if __name__ == '__main__':
             file_lines = f.readlines()
             for module_name in sys.argv[1:]:
                 for line in file_lines:
-                    if line.find('--- %s module with' % module_name) != -1:
+                    if line.find('--- import %s ' % module_name) != -1:
                         print '"%s" already exists in %s. Skipping...' % \
                                (module_name, PYDICTION_DICT)
                         sys.argv.remove(module_name)

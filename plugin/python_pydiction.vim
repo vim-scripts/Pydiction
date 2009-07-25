@@ -3,9 +3,9 @@
 " ============================================================================
 "
 " Author: Ryan Kulla (rkulla AT gmail DOT com)
-" Version: 1.1, for Vim 7
+" Version: 1.2, for Vim 7
 " URL: http://www.vim.org/scripts/script.php?script_id=850
-" Last Modified: July 20th, 2009
+" Last Modified: July 22th, 2009
 " Installation: On Linux, put this file in ~/.vim/after/ftplugin/
 "               On Windows, put this file in C:\vim\vimfiles\ftplugin\
 "                        (assuming you installed vim in C:\vim\).
@@ -20,6 +20,7 @@
 " Usage: Type part of a Python keyword, module name, attribute or method,
 "        then hit the TAB key and it will auto-complete (as long as it 
 "        exists in the complete-dict file.
+"        You can also use Shift-Tab to Tab backwards.
 " License: BSD
 " Copyright: Copyright (c) 2003-2009 Ryan Kulla
 "            All rights reserved.
@@ -60,23 +61,35 @@ endif
 " Make the Tab key do python code completion:
 inoremap <silent> <buffer> <Tab> 
          \<C-R>=<SID>SetVals()<CR>
-         \<C-R>=<SID>TabComplete()<CR>
+         \<C-R>=<SID>TabComplete('down')<CR>
+         \<C-R>=<SID>RestoreVals()<CR>
+
+" Make Shift+Tab do python code completion in the reverse direction:
+inoremap <silent> <buffer> <S-Tab> 
+         \<C-R>=<SID>SetVals()<CR>
+         \<C-R>=<SID>TabComplete('up')<CR>
          \<C-R>=<SID>RestoreVals()<CR>
 
 
 if !exists("*s:TabComplete")
-    function! s:TabComplete()
+    function! s:TabComplete(direction)
         " Check if the char before the char under the cursor is an 
         " underscore, letter, number, dot or opening parentheses.
         " If it is, and if the popup menu is not visible, use 
         " I_CTRL-X_CTRL-K ('dictionary' only completion)--otherwise, 
-        " use I_CTRL-N to scroll downward through the popup menu.
+        " use I_CTRL-N to scroll downward through the popup menu or
+        " use I_CTRL-P to scroll upward through the popup menu, 
+        " depending on the value of a:direction.
         " If the char is some other character, insert a normal Tab:
         if searchpos('[_a-zA-Z0-9.(]\%#', 'nb') != [0, 0] 
             if !pumvisible()
                 return "\<C-X>\<C-K>"
             else
-                return "\<C-N>"
+                if a:direction == 'down'
+                    return "\<C-N>"
+                else
+                    return "\<C-P>"
+                endif
             endif
         else
             return "\<Tab>"
