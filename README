@@ -2,6 +2,8 @@ This is a mirror of http://www.vim.org/scripts/script.php?script_id=850
 
 Pydiction allows you to Tab-complete Python code in Vim, including: standard, custom and third-party modules and packages. Plus keywords, built-ins, and string literals.
 
+For the latest version of Pydiction and documentation, see: https://github.com/rkulla/pydiction
+
 It consists of three main files:
     
         python_pydiction.vim -- The Vim plugin that creates the Tab-completion functionality for Python files.
@@ -101,8 +103,8 @@ The Tab key will work as normal for everything else. Pydiction will only try to 
 
 Screenshots
 ==========
-http://rkulla.com/images/screenshots/pydiction1.jpg
-http://rkulla.com/images/screenshots/pydiction2.jpg
+http://rkulla.com/assets/screenshots/pydiction1.jpg
+http://rkulla.com/assets/screenshots/pydiction2.jpg
 
 
 python_pydiction.vim (filetype plugin)
@@ -350,5 +352,4 @@ Further reading
 :help popupmenu-completion
 :help popupmenu-keys
 :help iskeyword
-
 

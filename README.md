@@ -4,25 +4,37 @@ Pydiction allows you to Tab-complete Python code in Vim, including keywords, the
 
 It consists of three main files:
     
-    python_pydiction.vim -- This is an ftplugin you put in your non-system ftplugin directory (i.e., ~/.vim/after/ftplugin/, on Unix or C:\vim\vimfiles\ftplugin\, on Windows)
-    complete-dict -- This is a vim dictionary file that consists of Python keywords and modules. This is what python_pydiction.vim looks at to know which things are completable.
-    pydiction.py -- (Not required) This is a Python script that was used to generate complete-dict. You can optionally run this script to add more modules to complete-dict.
+    python_pydiction.vim -- Vim plugin.
+    complete-dict -- Dictionary file that consists of Python keywords and modules. This is what the plugin refers to.
+    pydiction.py -- Python script you can optionally run to add more modules to complete-dict.
 
 
 Install Details
 ===============
-Unix/Linux: Put python_pydiction.vim in ~/.vim/after/ftplugin/   (If this directory doesn't already exist, create it. Vim will know to look there automatically.)
-Windows: Put python_pydiction.vim in C:\vim\vimfiles\ftplugin  (Assuming you installed Vim to C:\vim\).
+If you have Pathogen installed:
+
+    cd ~/.vim/bundle
+    git clone https://github.com/rkulla/pydiction.git
+
+Otherwise:
+
+UNIX/LINUX: Put python_pydiction.vim in ~/.vim/after/ftplugin/   (If this directory doesn't already exist, create it. Vim will know to look there automatically.)
+
+WINDOWS: Put python_pydiction.vim in C:\vim\vimfiles\ftplugin  (Assuming you installed Vim to C:\vim\).
 
 You may install the other files (complete-dict and pydiction.py) anywhere you want. For this example, we'll assume you put them in "C:\vim\vimfiles\ftplugin\pydiction\" (Do not put any file but python_pydiction.vim in the ftplugin\ directory, only .vim files should go there.)
 
+Note that the official mirror of pydiction is https://github.com/vim-scripts/Pydiction and has a lot more forks.
+
+Configuring
+===========
 In your vimrc file, first add the following line to enable filetype plugins:
   
     filetype plugin on
 
 then make sure you set "g:pydiction_location" to the full path of where you installed complete-dict, i.e.:
     
-    let g:pydiction_location = 'C:/vim/vimfiles/ftplugin/pydiction/complete-dict'
+    let g:pydiction_location = '/path/to/complete-dict'
 
 You can optionally set the height of the completion menu by setting "g:pydiction_menu_height" in your vimrc. For example:
     
