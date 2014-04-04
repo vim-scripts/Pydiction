@@ -1,28 +1,30 @@
 #!/usr/bin/env python
 """
 
-pydiction.py 1.2.1 by Ryan Kulla (rkulla AT gmail DOT com).
+pydiction.py 1.2.2 by Ryan Kulla (rkulla AT gmail DOT com).
+License: BSD.
 
 Description: Creates a Vim dictionary of Python module attributes for Vim's
              completion feature.  The created dictionary file is used by
              the Vim ftplugin "python_pydiction.vim".
 
-Usage: pydiction.py <module> ... [-v]
-Example: The following will append all the "time" and "math" modules'
-         attributes to a file, in the current directory, called "pydiction"
-         with and without the "time." and "math." prefix:
-             $ python pydiction.py time math
-         To print the output just to stdout, instead of appending to the file,
-         supply the -v option:
-             $ python pydiction.py -v time math
+Usage: pydiction.py <module> [<module> ...] [-v]
 
-License: BSD.
+Example: The following will append all the "time" and "math" modules'
+         attributes to a file, in the current directory, called "pydiction",
+         with and without the "time." and "math." prefix:
+
+             $ python pydiction.py time math
+
+         To output only to stdout and not append to file, use -v:
+
+             $ python pydiction.py -v time math
 """
 
 
 __author__ = "Ryan Kulla (rkulla AT gmail DOT com)"
-__version__ = "1.2.1"
-__copyright__ = "Copyright (c) 2003-2013 Ryan Kulla"
+__version__ = "1.2.2"
+__copyright__ = "Copyright (c) 2003-2014 Ryan Kulla"
 
 
 import os
@@ -64,6 +66,7 @@ def write_dictionary(module_name):
     prefix_on_callable = '%s.%s('
     prefix_off = '%s'
     prefix_off_callable = '%s('
+    python_version = '%s.%s.%s' % get_python_version()
 
     try:
         imported_module = my_import(module_name)
@@ -72,8 +75,19 @@ def write_dictionary(module_name):
 
     mod_attrs = dir(imported_module)
 
-    # Generate fully-qualified module names:
-    write_to.write('\n--- import %s ---\n' % module_name)
+    # If a module was passed on the command-line we'll call it a root module
+    if module_name in sys.argv[1:]:
+        try:
+            module_version = '%s/' % imported_module.__version__
+        except AttributeError:
+            module_version = ''
+        module_info = '(%spy%s/%s/root module) ' % (
+            module_version, python_version, sys.platform)
+    else:
+        module_info = ''
+
+    write_to.write('\n--- import %s %s---\n' % (module_name, module_info))
+
     for mod_attr in mod_attrs:
         if callable(getattr(imported_module, mod_attr)):
             # If an attribute is callable, show an opening parentheses:
@@ -221,11 +235,16 @@ def main(write_to):
     print "Done."
 
 
+def get_python_version():
+    """Returns the major, minor, micro python version as a tuple"""
+    return sys.version_info[0:3]
+
+
 if __name__ == '__main__':
     """Process the command line."""
 
-    if sys.version_info[0:2] < (2, 3):
-        sys.exit("You need a Python 2.x version of at least Python 2.3")
+    if get_python_version() < (2, 3):
+        sys.exit("You need at least Python 2.3")
 
     if len(sys.argv) <= 1:
         sys.exit("%s requires at least one argument. None given." %
